@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Standards List</title>
+</head>
+<body>
+    <h1>Standards List</h1>
+    {% if standards_list %}
+        <div class="standards-container">
+            {% for standard in standards_list %}
+                <div class="standard-item">
+                    <h2>{{ standard.standard_name }}</h2>
+                    <p>{{ standard.standard_description }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No standards are available.</p>
+    {% endif %}
+</body>
+</html>

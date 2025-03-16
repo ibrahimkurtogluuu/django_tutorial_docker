@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h1>Welcome to GRC System</h1>
+    <div class="nav-buttons">
+        <a href="{% url 'standards' %}" class="button">Standards</a>
+        <a href="{% url 'customers' %}" class="button">Customers</a>
+        <a href="/admin" class="button admin-button">Admin Panel</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .container {
+        text-align: center;
+        margin-top: 50px;
+    }
+    .nav-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 30px;
+    }
+    .button {
+        padding: 15px 30px;
+        background-color: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 18px;
+        transition: background-color 0.3s;
+    }
+    .button:hover {
+        background-color: #2980b9;
+    }
+    .admin-button {
+        background-color: #2ecc71;
+    }
+    .admin-button:hover {
+        background-color: #27ae60;
+    }
+</style>
+{% endblock %}
