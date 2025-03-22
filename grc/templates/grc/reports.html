@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+</head>
+<body>
+    <h1>Reports</h1>
+
+
+        <h2>Sessions List</h2>
+        <ul>
+            {% for session_id in sessions_with_all_questions_answered %}
+                <li>Session ID: {{ session_id }}</li>
+                <p>Report is ready for this session</p>
+            {% endfor %}
+            
+            {% if sessions_not_answered_all_questions %}
+                {% for session_id in sessions_not_answered_all_questions %}
+                    <li>Session ID: {{ session_id }}</li>
+                    <p>Report is not ready for this session</p>
+                {% endfor %}
+            {% else %}
+                <p>There are no sessions that are not completed</p>
+            {% endif %}
+        </ul>
+
+
+</body>
+</html>
+

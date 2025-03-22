@@ -8,6 +8,7 @@
         <a href="{% url 'standards' %}" class="button">Standards</a>
         <a href="{% url 'customers' %}" class="button">Customers</a>
         <a href="/admin" class="button admin-button">Admin Panel</a>
+        <a href="{% url 'reports' %}" class="button report-button">Rapor</a>
     </div>
 </div>
 {% endblock %}
@@ -42,5 +43,13 @@
     .admin-button:hover {
         background-color: #27ae60;
     }
+
+    .report-button {
+        background-color: #7345ca;
+    }
+    .report-button:hover {
+        background-color: #6832ce;
+    }
+        
 </style>
 {% endblock %}
