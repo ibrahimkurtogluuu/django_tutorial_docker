@@ -6,20 +6,50 @@
     <title>Reports</title>
 </head>
 <body>
+<!-- loading templatetags dict_filters.py -->
+    {% load dict_filters %}
     <h1>Reports</h1>
 
+    <!-- Display flash messages -->
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li class="message {{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
-        <h2>Sessions List</h2>
+        <h2>Sessions List All Questions Answered</h2>
         <ul>
             {% for session_id in sessions_with_all_questions_answered %}
-                <li>Session ID: {{ session_id }}</li>
-                <p>Report is ready for this session</p>
+                <!-- get item comes from load dict_filters above -->
+                {% if session_report_status|get_item:session_id %}
+                
+                    <li>Session ID: {{ session_id }}, form submitted_at {{date.day}}/{{date.month}}/{{date.year}}</li>
+                    <p>Report Created</p>
+                    <!-- Add a button to view the report for this session -->
+                    <form action="{% url 'view_report' session_id=session_id %}" method="get">
+                        <button type="submit">View Report</button>
+                    </form>
+                    <br>
+                {% else %}
+                    <li>Session ID: {{ session_id }}, form submitted_at {{date.day}}/{{date.month}}/{{date.year}}</li>
+                    <p>Ready to create Report</p>
+                    <!-- Add a button to create a report for this session -->
+                    <form action="{% url 'create_report' session_id=session_id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Create Report</button>
+                    </form>
+                {% endif %}
             {% endfor %}
-            
+        </ul>
+
+        <h2>Sessions List All Questions were not Answered</h2>
+        <ul>
             {% if sessions_not_answered_all_questions %}
                 {% for session_id in sessions_not_answered_all_questions %}
                     <li>Session ID: {{ session_id }}</li>
-                    <p>Report is not ready for this session</p>
+                    <p>Not Ready to Create Report</p>
                 {% endfor %}
             {% else %}
                 <p>There are no sessions that are not completed</p>

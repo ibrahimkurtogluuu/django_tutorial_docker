@@ -65,7 +65,18 @@ class Report(models.Model):
     session_id = models.CharField(max_length=100, unique=True)  # Unique session
     completed_at = models.DateTimeField(auto_now_add=True)  # When report was generated
     summary = models.TextField(blank=True)  # Processed report data
-    
+    decision_support = models.TextField(blank=True, null=True)
+    regulatory_requirements = models.TextField(blank=True, null=True)
+    stakeholder_expectations = models.TextField(blank=True, null=True)
+    competitor_analysis = models.TextField(blank=True, null=True)
+    risk_surface = models.TextField(blank=True, null=True)
+    primary_risks = models.TextField(blank=True, null=True)
+    governance_focus = models.TextField(blank=True, null=True)
+    governance_topics = models.TextField(blank=True, null=True)
+    minimum_policy_set = models.TextField(blank=True, null=True)
+    minimum_solution_set = models.TextField(blank=True, null=True)
+    solution_roadmap = models.TextField(blank=True, null=True)
+
     def __str__(self):
         return f"Report for session {self.session_id}"  # Show session ID
         
