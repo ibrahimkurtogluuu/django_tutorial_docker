@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Submission</title>
+    <style>
+        .question-container { margin-bottom: 20px; }
+        .answered { background-color: #e0ffe0; }
+        .messages { position: fixed; top: 10px; right: 10px; }
+        .message { padding: 10px; background: #d4edda; border: 1px solid #c3e6cb; }
+
+    </style>
+</head>
+<body>
+    <h1>Form Submission</h1>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% for qf in question_forms %}
+        <div class="question-container {% if qf.answered %}answered{% endif %}">
+            <h3>{{ qf.question.text }}</h3>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="question_id" value="{{ qf.question.id }}">
+                {{ qf.form.as_p }}
+                <button type="submit">Submit</button>
+                {% if qf.answered %}
+                    <span style="color: green;">✔ Answered</span>
+                {% endif %}
+            </form>
+        </div>
+    {% endfor %}
+
+    <script>
+        // Auto-hide messages after 3 seconds
+        setTimeout(() => {
+            document.querySelector('.messages')?.remove();
+        }, 3000);
+
+    </script>
+</body>
+</html>

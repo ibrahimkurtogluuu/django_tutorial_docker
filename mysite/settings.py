@@ -131,3 +131,13 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  # Where static files will be collected
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# when login submitted, redirect to this URL
+LOGIN_REDIRECT_URL = '/grc/'
+
+# when logout submitted, redirect to this URL
+LOGOUT_REDIRECT_URL = '/grc/logout/'  
+
+# when login required or login button clicked, redirect to this URL
+LOGIN_URL = '/grc/login/'
+

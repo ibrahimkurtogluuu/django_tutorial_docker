@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .messages { position: fixed; top: 10px; right: 10px; }
+        .message { padding: 10px; border-radius: 3px; }
+        .message.error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        button { padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 3px; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>Create Your Report</h1>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <h3>Your Answers</h3>
+    {% for question, answer in question_answer_pair.items %}
+        <p><strong>{{ question }}</strong>: {{ answer }}</p>
+    {% endfor %}
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Generate Report</button>
+    </form>
+    <a href="{% url 'reports' %}">Back to Reports</a>
+
+    <script>
+        setTimeout(() => {
+            const messages = document.querySelector('.messages');
+            if (messages) messages.remove();
+        }, 3000);
+    </script>
+</body>
+</html>

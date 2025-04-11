@@ -1,5 +1,7 @@
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
+from django.contrib.auth.models import User
+import uuid
 
 # Create your models here.
 
@@ -48,23 +50,23 @@ class Question(models.Model):
         return self.text[:50]  # Show first 50 characters of the question
 
 
+
+
 class Answer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='answers')
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
-    session_id = models.CharField(max_length=100, blank=True, null=True)  # Optional Unique ID for session 
-#   user = models.CharField(max_length=100, blank=True, null=True)  # Optional user
     response = models.TextField()
-    submitted_at = models.DateTimeField(auto_now_add=True)
-    
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('user', 'question')  # Ensures one answer per user per question
+
     def __str__(self):
-
-       # return f"Answer to '{self.question}' by {self.user or 'Anonymous'}" # Show user or 'Anonymous' if no user
-        return f"Answer to '{self.question}' in {self.session_id} session" # Show user or 'Anonymous' if no user
-
+        return f"{self.user.username} - {self.question.text[:20]}"
 
 class Report(models.Model):
-    session_id = models.CharField(max_length=100, unique=True)  # Unique session
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='report')
     completed_at = models.DateTimeField(auto_now_add=True)  # When report was generated
-    summary = models.TextField(blank=True)  # Processed report data
     decision_support = models.TextField(blank=True, null=True)
     regulatory_requirements = models.TextField(blank=True, null=True)
     stakeholder_expectations = models.TextField(blank=True, null=True)
@@ -78,5 +80,5 @@ class Report(models.Model):
     solution_roadmap = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"Report for session {self.session_id}"  # Show session ID
+        return f"Report"  # Show submission ID
         

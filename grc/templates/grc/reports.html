@@ -4,59 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reports</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .messages { position: fixed; top: 10px; right: 10px; }
+        .message { padding: 10px; border-radius: 3px; }
+        .message.success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .message.error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        button, a.btn { padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 3px; text-decoration: none; }
+        button:hover, a.btn:hover { background: #0056b3; }
+        button:disabled { background: #cccccc; cursor: not-allowed; }
+    </style>
 </head>
 <body>
-<!-- loading templatetags dict_filters.py -->
-    {% load dict_filters %}
-    <h1>Reports</h1>
+    <h1>Your Report Status</h1>
 
-    <!-- Display flash messages -->
     {% if messages %}
-        <ul>
+        <div class="messages">
             {% for message in messages %}
-                <li class="message {{ message.tags }}">{{ message }}</li>
+                <div class="message {{ message.tags }}">{{ message }}</div>
             {% endfor %}
-        </ul>
+        </div>
     {% endif %}
 
-        <h2>Sessions List All Questions Answered</h2>
-        <ul>
-            {% for session_id in sessions_with_all_questions_answered %}
-                <!-- get item comes from load dict_filters above -->
-                {% if session_report_status|get_item:session_id %}
-                
-                    <li>Session ID: {{ session_id }}, form submitted_at {{date.day}}/{{date.month}}/{{date.year}}</li>
-                    <p>Report Created</p>
-                    <!-- Add a button to view the report for this session -->
-                    <form action="{% url 'view_report' session_id=session_id %}" method="get">
-                        <button type="submit">View Report</button>
-                    </form>
-                    <br>
-                {% else %}
-                    <li>Session ID: {{ session_id }}, form submitted_at {{date.day}}/{{date.month}}/{{date.year}}</li>
-                    <p>Ready to create Report</p>
-                    <!-- Add a button to create a report for this session -->
-                    <form action="{% url 'create_report' session_id=session_id %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit">Create Report</button>
-                    </form>
-                {% endif %}
-            {% endfor %}
-        </ul>
+    <p>Total Questions: {{ total_questions }}</p>
+    <p>Questions Answered: {{ answered_questions }}</p>
+    {% if has_all_answers %}
+        <p style="color: green;">You have answered all questions!</p>
+        {% if report_exists %}
+            <p>You have a report.</p>
+            <a href="{% url 'view_report' %}" class="btn">View Report</a>
+            <a href="{% url 'create_report' %}" class="btn">Update Report</a>
+        {% else %}
+            <p>No report exists yet.</p>
+            <a href="{% url 'create_report' %}" class="btn">Create Report</a>
+        {% endif %}
+    {% else %}
+        <p style="color: red;">Please answer all questions to create or update a report.</p>
+        <a href="{% url 'form_submission' %}" class="btn">Answer Questions</a>
+    {% endif %}
 
-        <h2>Sessions List All Questions were not Answered</h2>
-        <ul>
-            {% if sessions_not_answered_all_questions %}
-                {% for session_id in sessions_not_answered_all_questions %}
-                    <li>Session ID: {{ session_id }}</li>
-                    <p>Not Ready to Create Report</p>
-                {% endfor %}
-            {% else %}
-                <p>There are no sessions that are not completed</p>
-            {% endif %}
-        </ul>
-
-
+    <script>
+        setTimeout(() => {
+            const messages = document.querySelector('.messages');
+            if (messages) messages.remove();
+        }, 3000);
+    </script>
 </body>
 </html>
-

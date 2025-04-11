@@ -4,24 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .messages { position: fixed; top: 10px; right: 10px; }
+        .message { padding: 10px; border-radius: 3px; }
+        .message.error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .section { margin-bottom: 20px; }
+    </style>
 </head>
 <body>
-    <h1>Report Details</h1>
-    <ul>
-        <li><strong>Session ID:</strong> {{ report.session_id }}</li>
-        <li><strong>Completed At:</strong> {{ report.completed_at }}</li>
-        <li><strong>Summary:</strong> {{ report.summary }}</li>
-        <li><strong>Decision Support:</strong> {{ report.decision_support }}</li>
-        <li><strong>Regulatory Requirements:</strong> {{ report.regulatory_requirements }}</li>
-        <li><strong>Stakeholder Expectations:</strong> {{ report.stakeholder_expectations }}</li>
-        <li><strong>Competitor Analysis:</strong> {{ report.competitor_analysis }}</li>
-        <li><strong>Risk Surface:</strong> {{ report.risk_surface }}</li>
-        <li><strong>Primary Risks:</strong> {{ report.primary_risks }}</li>
-        <li><strong>Governance Focus:</strong> {{ report.governance_focus }}</li>
-        <li><strong>Governance Topics:</strong> {{ report.governance_topics }}</li>
-        <li><strong>Minimum Policy Set:</strong> {{ report.minimum_policy_set }}</li>
-        <li><strong>Minimum Solution Set:</strong> {{ report.minimum_solution_set }}</li>
-        <li><strong>Solution Roadmap:</strong> {{ report.solution_roadmap }}</li>
-    </ul>
+    <h1>Your Report</h1>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="section">
+        <h2>Decision Support</h2>
+        <p>{{ report.decision_support|default:"Not provided" }}</p>
+    </div>
+    <div class="section">
+        <h2>Regulatory Requirements</h2>
+        <p>{{ report.regulatory_requirements|default:"Not provided" }}</p>
+    </div>
+    <div class="section">
+        <h2>Stakeholder Expectations</h2>
+        <p>{{ report.stakeholder_expectations|default:"Not provided" }}</p>
+    </div>
+    <div class="section">
+        <h2>Competitor Analysis</h2>
+        <p>{{ report.competitor_analysis|default:"Not provided" }}</p>
+    </div>
+    <div class="section">
+        <h2>Risk Surface</h2>
+        <p>{{ report.risk_surface|default:"Not provided" }}</p>
+    </div>
+    <div class="section">
+        <h2>Primary Risks</h2>
+        <p>{{ report.primary_risks|default:"Not provided" }}</p>
+    </div>
+    <div class="section">
+        <h2>Governance Focus</h2>
+        <p>{{ report.governance_focus|default:"Not provided" }}</p>
+    </div>
+    <div class="section">
+        <h2>Governance Topics</h2>
+        <p>{{ report.governance_topics|default:"Not provided" }}</p>
+    </div>
+    <div class="section">
+        <h2>Minimum Policy Set</h2>
+        <p>{{ report.minimum_policy_set|default:"Not provided" }}</p>
+    </div>
+    <div class="section">
+        <h2>Minimum Solution Set</h2>
+        <p>{{ report.minimum_solution_set|default:"Not provided" }}</p>
+    </div>
+    <div class="section">
+        <h2>Solution Roadmap</h2>
+        <p>{{ report.solution_roadmap|default:"Not provided" }}</p>
+    </div>
+
+    <a href="{% url 'reports' %}">Back to Reports</a>
+
+    <script>
+        setTimeout(() => {
+            const messages = document.querySelector('.messages');
+            if (messages) messages.remove();
+        }, 3000);
+    </script>
 </body>
 </html>
