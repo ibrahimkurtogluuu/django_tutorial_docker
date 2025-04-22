@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{report.user.username}}'s Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .section {
+            border-bottom: 1px solid #e5e7eb; /* Tailwind's border-gray-200 */
+            padding-top: 1.5rem; /* Tailwind's py-6 */
+            padding-bottom: 1.5rem; /* Tailwind's py-6 */
+        }
+        .section:last-child {
+            border-bottom: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <h1 class="text-3xl font-bold text-gray-900">{{report.user.username}}'s Report</h1>
+            <div class="mt-2 h-1 w-20 bg-blue-600 mx-auto"></div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="bg-white shadow-lg rounded-lg p-8">
+            <div class="section">
+                <h2 class="text-xl font-semibold text-gray-800">Decision Support</h2>
+                <p class="mt-2 text-gray-600">{{ report.decision_support|default:"Not provided" }}</p>
+            </div>
+            <div class="section">
+                <h2 class="text-xl font-semibold text-gray-800">Regulatory Requirements</h2>
+                <p class="mt-2 text-gray-600">{{ report.regulatory_requirements|default:"Not provided" }}</p>
+            </div>
+            <div class="section">
+                <h2 class="text-xl font-semibold text-gray-800">Stakeholder Expectations</h2>
+                <p class="mt-2 text-gray-600">{{ report.stakeholder_expectations|default:"Not provided" }}</p>
+            </div>
+            <div class="section">
+                <h2 class="text-xl font-semibold text-gray-800">Competitor Analysis</h2>
+                <p class="mt-2 text-gray-600">{{ report.competitor_analysis|default:"Not provided" }}</p>
+            </div>
+            <div class="section">
+                <h2 class="text-xl font-semibold text-gray-800">Risk Surface</h2>
+                <p class="mt-2 text-gray-600">{{ report.risk_surface|default:"Not provided" }}</p>
+            </div>
+            <div class="section">
+                <h2 class="text-xl font-semibold text-gray-800">Primary Risks</h2>
+                <p class="mt-2 text-gray-600">{{ report.primary_risks|default:"Not provided" }}</p>
+            </div>
+            <div class="section">
+                <h2 class="text-xl font-semibold text-gray-800">Governance Focus</h2>
+                <p class="mt-2 text-gray-600">{{ report.governance_focus|default:"Not provided" }}</p>
+            </div>
+            <div class="section">
+                <h2 class="text-xl font-semibold text-gray-800">Governance Topics</h2>
+                <p class="mt-2 text-gray-600">{{ report.governance_topics|default:"Not provided" }}</p>
+            </div>
+            <div class="section">
+                <h2 class="text-xl font-semibold text-gray-800">Minimum Policy Set</h2>
+                <p class="mt-2 text-gray-600">{{ report.minimum_policy_set|default:"Not provided" }}</p>
+            </div>
+            <div class="section">
+                <h2 class="text-xl font-semibold text-gray-800">Minimum Solution Set</h2>
+                <p class="mt-2 text-gray-600">{{ report.minimum_solution_set|default:"Not provided" }}</p>
+            </div>
+            <div class="section">
+                <h2 class="text-xl font-semibold text-gray-800">Solution Roadmap</h2>
+                <p class="mt-2 text-gray-600">{{ report.solution_roadmap|default:"Not provided" }}</p>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-8 text-center">
+            <p class="text-sm text-gray-500">Generated on {{ "now"|date:"F d, Y" }}</p>
+        </footer>
+    </div>
+</body>
+</html>

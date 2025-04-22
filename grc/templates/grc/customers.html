@@ -37,6 +37,7 @@
 <body>
     <h1>Customers List</h1>
     {% if customers_list %}
+        <span>{{request}} and request user is {{request.user}}</span>
         <div class="customers-container">
             {% for customer in customers_list %}
                 <div class="customer-item">

@@ -11,13 +11,12 @@ urlpatterns = [
     path('form/standards/', views.form_standards, name='form_standards'),
     path('customers/', views.customers, name='customers'),
     path('form/', views.form_submission, name='form_submission'),
-    path('form/', views.form_submission, name='form_submission'),
+    path('form/update/<int:user_id>/', views.update_user_form, name='update_user_form'),
     path('reports/', views.reports, name='reports'),
     path('reports/create/', views.create_report, name='create_report'),
+    path('reports/create/<int:user_id>', views.user_create_report, name='user_create_report'),
     path('reports/view/', views.view_report, name='view_report'),
+    path('reports/view/<int:user_id>', views.user_view_report, name='user_view_report'),
+    path('users/', views.users, name='users'),
+    path('form/update_test/<int:user_id>/', views.update_user_form_test, name='update_user_form_test'),
 ]
-
-    # path('reports/', views.reports, name='reports'),
-    # path('create_report/<str:session_id>/', views.create_report, name='create_report'),
-    # path('view_report/<str:session_id>/', views.view_report, name='view_report'),
-    # path('form_submission/', views.form_submission, name='form_submission'),

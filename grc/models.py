@@ -80,5 +80,12 @@ class Report(models.Model):
     solution_roadmap = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"Report"  # Show submission ID
+        return f"Report for {self.user.username}. to reach add column names."  # Show submission ID
         
+
+class AnswerSelection(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answer_selections')
+    answer_text = models.CharField(max_length=100, blank=True, null=True)  # Matches db.String(100), nullable=True
+
+    def __str__(self):
+        return f"{self.answer_text} (for {self.question.text[:20]})"

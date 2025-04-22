@@ -1,6 +1,6 @@
 from django.contrib import admin
 from mptt.admin import MPTTModelAdmin
-from .models import Standard, Customer, Sector, SectorCategory, Question, Answer, Report
+from .models import Standard, Customer, Sector, SectorCategory, Question, Answer, Report, AnswerSelection
 
 class CustomerAdmin(admin.ModelAdmin):
     filter_horizontal = ('sectors',)
@@ -39,7 +39,10 @@ class AnswerAdmin(admin.ModelAdmin):
 class ReportAdmin(admin.ModelAdmin):
     list_display = ( 'completed_at', 'user')  # Custom method for session_id
     list_filter = ('completed_at', 'user')  # Filter via submission
-    
+
+class AnswerSelectionAdmin(admin.ModelAdmin):
+    list_display = ['question', 'answer_text']
+    list_filter = ['question']
 
 # Register models with admin
 admin.site.register(Standard)
@@ -49,3 +52,4 @@ admin.site.register(SectorCategory, SectorCategoryAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Answer, AnswerAdmin)
 admin.site.register(Report, ReportAdmin)
+admin.site.register(AnswerSelection, AnswerSelectionAdmin)

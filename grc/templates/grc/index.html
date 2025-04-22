@@ -9,6 +9,14 @@
         <a href="{% url 'customers' %}" class="button">Customers</a>
         <a href="/admin" class="button admin-button">Admin Panel</a>
         <a href="{% url 'reports' %}" class="button report-button">Rapor</a>
+        <a href="{% url 'form_submission' %}" class="button form-button">Form</a>
+        <a href="{% url 'login' %}" class="button login-button">Login</a>
+        <a href="{% url 'logout' %}" class="button logout-button">Logout</a>
+        <a href="{% url 'register' %}" class="button register-button">Register</a>
+        <a href="{% url 'form_standards' %}" class="button form-standards-button">Add Standards</a>
+        <a href="{% url 'create_report' %}" class="button create-report-button">Create Report</a>
+        <a href="{% url 'view_report' %}" class="button view-report-button">View Report</a>
+        <a href="{% url 'users' %}" class="button users">Users List</a>
     </div>
 </div>
 {% endblock %}
@@ -21,9 +29,13 @@
     }
     .nav-buttons {
         display: flex;
+        flex-wrap: wrap;
         justify-content: center;
         gap: 20px;
         margin-top: 30px;
+        max-width: 50%;
+        margin-left: auto;
+        margin-right: auto;
     }
     .button {
         padding: 15px 30px;
@@ -50,6 +62,55 @@
     .report-button:hover {
         background-color: #6832ce;
     }
+    .form-button {
+        background-color: #e74c3c;
+    }
+    .form-button:hover {
+        background-color: #c0392b;
+    }
+    .login-button {
+        background-color: #f39c12;
+    }
+    .login-button:hover {
+        background-color: #e67e22;
+    }
+    .logout-button {
+        background-color: #e74c3c;
+    }
+    .logout-button:hover {
+        background-color: #c0392b;
+    }
+    .register-button {
+        background-color: #8e44ad;
+    }
+    .register-button:hover {
+        background-color: #7d3c98;
+    }
+    .form-standards-button {
+        background-color: #2980b9;
+    }
+    .form-standards-button:hover {
+        background-color: #2471a3;
+    }
+    .create-report-button {
+        background-color: #16a085;
+    }
+    .create-report-button:hover {
+        background-color: #1abc9c;
+    }
+    .view-report-button {
+        background-color: #f39c12;
+    }
+    .view-report-button:hover {
+        background-color: #e67e22;
+    }
+    .users {
+        background-color: #b34457;
+    }
+    .users:hover {
+        background-color: #b34442;
+    }
+    
         
 </style>
 {% endblock %}
