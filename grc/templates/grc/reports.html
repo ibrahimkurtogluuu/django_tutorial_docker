@@ -1,53 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reports</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .messages { position: fixed; top: 10px; right: 10px; }
-        .message { padding: 10px; border-radius: 3px; }
-        .message.success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
-        .message.error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
-        button, a.btn { padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 3px; text-decoration: none; }
-        button:hover, a.btn:hover { background: #0056b3; }
-        button:disabled { background: #cccccc; cursor: not-allowed; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reports</title>
+  <style>
+    :root {
+      --docker_bg: #0e1117;
+      --docker_panel: #1a1d23;
+      --docker_border: #2a2e36;
+      --docker_text: #e4e6eb;
+      --docker_subtext: #8b949e;
+      --docker_cyan: #38bdf8;
+      --docker_blue: #2563eb;
+      --docker_green: #16a34a;
+      --docker_red: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--docker_bg);
+      color: var(--docker_text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1rem;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 42rem; /* Approx 672px, equivalent to max-w-2xl */
+      background-color: var(--docker_panel);
+      border: 1px solid var(--docker_border);
+      border-radius: 0.75rem; /* Approx 12px */
+      padding: 1.5rem; /* Approx 24px */
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .title {
+      font-size: 1.875rem; /* Approx 30px */
+      font-weight: 700;
+      text-align: center;
+      color: var(--docker_cyan);
+      margin-bottom: 1.5rem; /* Approx 24px */
+    }
+
+    .messages {
+      margin-bottom: 1rem; /* Approx 16px */
+    }
+
+    .messages > * + * {
+      margin-top: 0.75rem; /* Approx 12px, for space-y-3 */
+    }
+
+    .message {
+      background-color: rgba(22, 163, 74, 0.1); /* docker_green with 10% opacity */
+      color: var(--docker_green);
+      border-left: 4px solid var(--docker_green);
+      padding: 0.75rem 1rem; /* Approx 12px 16px */
+      border-radius: 0.25rem; /* Approx 4px */
+    }
+
+    .info {
+      margin-bottom: 0.5rem; /* Approx 8px */
+    }
+
+    .info-label {
+      font-weight: 600;
+      color: var(--docker_subtext);
+    }
+
+    .success {
+      color: var(--docker_green);
+      font-weight: 500;
+      margin-bottom: 0.75rem; /* Approx 12px */
+    }
+
+    .error {
+      color: var(--docker_red);
+      font-weight: 500;
+      margin-bottom: 0.75rem; /* Approx 12px */
+    }
+
+    .status {
+      margin-bottom: 0.5rem; /* Approx 8px */
+    }
+
+    .button {
+      display: inline-block;
+      padding: 0.5rem 1.25rem; /* Approx 8px 20px */
+      border-radius: 0.25rem; /* Approx 4px */
+      text-decoration: none;
+      transition: background-color 0.2s ease-in-out;
+    }
+
+    .button-blue {
+      background-color: var(--docker_blue);
+      color: #ffffff;
+    }
+
+    .button-blue:hover {
+      background-color: #1d4ed8; /* Slightly darker blue for hover */
+    }
+
+    .button-cyan {
+      background-color: var(--docker_cyan);
+      color: var(--docker_bg);
+    }
+
+    .button-cyan:hover {
+      background-color: #0ea5e9; /* Slightly darker cyan for hover */
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.5s ease-out;
+    }
+  </style>
 </head>
 <body>
-    <h1>Your Report Status</h1>
+  <div class="container">
+    <h1 class="title">Your Report Status</h1>
 
     {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="message {{ message.tags }}">{{ message }}</div>
-            {% endfor %}
-        </div>
+      <div class="messages">
+        {% for message in messages %}
+          <div class="message" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
     {% endif %}
 
-    <p>Total Questions: {{ total_questions }}</p>
-    <p>Questions Answered: {{ answered_questions }}</p>
+    <p class="info"><span class="info-label">Total Questions:</span> {{ total_questions }}</p>
+    <p class="info"><span class="info-label">Questions Answered:</span> {{ answered_questions }}</p>
+
     {% if has_all_answers %}
-        <p style="color: green;">You have answered all questions!</p>
-        {% if report_exists %}
-            <p>You have a report.</p>
-            <a href="{% url 'view_report' %}" class="btn">View Report</a>
-            <a href="{% url 'create_report' %}" class="btn">Update Report</a>
-        {% else %}
-            <p>No report exists yet.</p>
-            <a href="{% url 'create_report' %}" class="btn">Create Report</a>
-        {% endif %}
+      <p class="success">✅ You have answered all questions! Report will be sent to your email address soon.</p>
+      {% if report_exists %}
+        <p class="status">📄 You have a report ready.</p>
+        <a href="{% url 'view_report' %}" class="button button-blue">View Report</a>
+      {% else %}
+        <p class="status" style="color: var(--docker_subtext);">No report exists yet.</p>
+      {% endif %}
     {% else %}
-        <p style="color: red;">Please answer all questions to create or update a report.</p>
-        <a href="{% url 'form_submission' %}" class="btn">Answer Questions</a>
+      <p class="error">⚠️ Please answer all questions to create or update a report.</p>
+      <a href="{% url 'chatbot' %}" class="button button-cyan">Answer Questions</a>
     {% endif %}
+  </div>
 
-    <script>
-        setTimeout(() => {
-            const messages = document.querySelector('.messages');
-            if (messages) messages.remove();
-        }, 3000);
-    </script>
+  <script>
+    setTimeout(() => {
+      const messages = document.querySelector('.messages');
+      if (messages) messages.classList.add('fade-out');
+      setTimeout(() => messages?.remove(), 500);
+    }, 3000);
+  </script>
 </body>
 </html>

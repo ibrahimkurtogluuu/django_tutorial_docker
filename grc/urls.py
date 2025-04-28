@@ -5,7 +5,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('', views.index, name='index'),
     path('register/', views.register, name='register'),
-    path('login/', auth_views.LoginView.as_view(template_name='grc/login.html'), name='login'),
+    path('login/', views.CustomLoginView.as_view(template_name='grc/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='grc/logout.html'), name='logout'),
     path('standards/', views.standards, name='standards'),
     path('form/standards/', views.form_standards, name='form_standards'),
@@ -19,4 +19,5 @@ urlpatterns = [
     path('reports/view/<int:user_id>', views.user_view_report, name='user_view_report'),
     path('users/', views.users, name='users'),
     path('form/update_test/<int:user_id>/', views.update_user_form_test, name='update_user_form_test'),
+    path('chatbot/', views.chatbot, name='chatbot')
 ]

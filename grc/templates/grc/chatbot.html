@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chatbot - Answer Questions</title>
+  <style>
+    :root {
+      --docker_bg: #0e1117;
+      --docker_panel: #1a1d23;
+      --docker_border: #2a2e36;
+      --docker_text: #e4e6eb;
+      --docker_subtext: #8b949e;
+      --docker_cyan: #38bdf8;
+      --docker_blue: #2563eb;
+      --docker_green: #16a34a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--docker_bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 42rem; /* Approx 672px, equivalent to max-w-2xl */
+      background-color: var(--docker_panel);
+      border: 1px solid var(--docker_border);
+      border-radius: 0.75rem; /* Approx 12px */
+      padding: 1.5rem; /* Approx 24px */
+      color: var(--docker_text);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .title {
+      font-size: 1.875rem; /* Approx 30px */
+      font-weight: 700;
+      text-align: center;
+      color: var(--docker_cyan);
+      margin-bottom: 1.5rem; /* Approx 24px */
+    }
+
+    .messages {
+      margin-bottom: 1rem; /* Approx 16px */
+    }
+
+    .messages > * + * {
+      margin-top: 0.75rem; /* Approx 12px, for space-y-3 */
+    }
+
+    .message {
+      background-color: rgba(22, 163, 74, 0.1); /* docker_green with 10% opacity */
+      color: var(--docker_green);
+      border-left: 4px solid var(--docker_green);
+      padding: 0.75rem 1rem; /* Approx 12px 16px */
+      border-radius: 0.25rem; /* Approx 4px */
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form > * + * {
+      margin-top: 1.25rem; /* Approx 20px, for space-y-5 */
+    }
+
+    .question {
+      background-color: var(--docker_border);
+      color: var(--docker_text);
+      font-size: 1.125rem; /* Approx 18px */
+      font-weight: 500;
+      border-radius: 0.75rem; /* Approx 12px */
+      padding: 1rem; /* Approx 16px */
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .options > * + * {
+      margin-top: 0.75rem; /* Approx 12px, for space-y-3 */
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem; /* Approx 12px */
+      background-color: var(--docker_bg);
+      color: var(--docker_text);
+      border: 1px solid var(--docker_border);
+      border-radius: 0.375rem; /* Approx 6px */
+      cursor: pointer;
+      transition: border-color 0.2s ease-in-out;
+    }
+
+    .option-label:hover {
+      border-color: var(--docker_cyan);
+    }
+
+    .option-checkbox {
+      height: 1.25rem; /* Approx 20px */
+      width: 1.25rem; /* Approx 20px */
+      border: 2px solid #6b7280; /* Approx gray-500 */
+      border-radius: 0.25rem; /* Approx 4px */
+      accent-color: var(--docker_cyan);
+      margin-right: 0.75rem; /* Approx 12px */
+    }
+
+    .option-checkbox:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--docker_cyan);
+    }
+
+    .textarea {
+      width: 100%;
+      padding: 1rem; /* Approx 16px */
+      border-radius: 0.75rem; /* Approx 12px */
+      background-color: var(--docker_bg);
+      color: var(--docker_text);
+      border: 1px solid var(--docker_border);
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .textarea::placeholder {
+      color: var(--docker_subtext);
+    }
+
+    .textarea:focus {
+      border-color: var(--docker_cyan);
+      box-shadow: 0 0 0 2px var(--docker_cyan);
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem; /* Approx 16px */
+    }
+
+    @media (min-width: 640px) {
+      .button-group {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      .button {
+        width: auto;
+      }
+    }
+
+    .button {
+      width: 100%;
+      background-color: var(--docker_blue);
+      color: #ffffff;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem; /* Approx 12px 24px */
+      border-radius: 0.75rem; /* Approx 12px */
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease-in-out;
+    }
+
+    .button:hover {
+      background-color: #1d4ed8; /* Slightly darker blue for hover */
+    }
+
+    .link {
+      color: var(--docker_subtext);
+      text-decoration: none;
+    }
+
+    .link:hover {
+      text-decoration: underline;
+    }
+
+    .no-questions {
+      text-align: center;
+      color: var(--docker_subtext);
+      font-size: 1.125rem; /* Approx 18px */
+    }
+
+    .no-questions-link {
+      display: inline-block;
+      margin-top: 1rem; /* Approx 16px */
+      color: var(--docker_cyan);
+      text-decoration: none;
+    }
+
+    .no-questions-link:hover {
+      text-decoration: underline;
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.5s ease-out;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">Answer Questions</h1>
+
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="message" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if question %}
+      <form method="post" class="form">
+        {% csrf_token %}
+        <input type="hidden" name="question_id" value="{{ question.id }}" />
+        
+        <div class="question">
+          {{ question.text }}
+        </div>
+
+        <div class="options">
+          {% for selection in answer_selections %}
+            <label for="option_{{ selection.id }}" class="option-label">
+              <input type="checkbox" name="answer_selections" value="{{ selection.id }}" id="option_{{ selection.id }}"
+                     class="option-checkbox"
+                     {% if selection.id|stringformat:"s" in selected_answers %}checked{% endif %}>
+              <span>{{ selection.answer_text }}</span>
+            </label>
+          {% endfor %}
+        </div>
+        {% if question.id == 1 %}
+          <input name="custom_answer" type = "url">{{ custom_answer }}</input>
+        {% else %}
+          <textarea name="custom_answer" rows="4" placeholder="Add your custom answer (optional)"
+          class="textarea">{{ custom_answer }}</textarea>
+        {% endif %}
+
+
+        <div class="button-group">
+          <button type="submit" class="button">Submit Answer</button>
+          <a href="{% url 'reports' %}" class="link">Back to Reports</a>
+        </div>
+      </form>
+    {% else %}
+      <p class="no-questions">No more questions to answer.</p>
+      <div class="no-questions-link">
+        <a href="{% url 'reports' %}" class="no-questions-link">Back to Reports</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    setTimeout(() => {
+      const messages = document.querySelectorAll('.message');
+      messages.forEach(msg => {
+        msg.classList.add('fade-out');
+        setTimeout(() => msg.remove(), 500);
+      });
+    }, 3000);
+  </script>
+</body>
+</html>
