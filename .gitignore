@@ -1,3 +1,5 @@
 venvdjango
 .env
 temporary_backups
+old_backup_requirements.txt
+
