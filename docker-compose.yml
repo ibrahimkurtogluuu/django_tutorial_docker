@@ -14,7 +14,8 @@ services:
     volumes:
       - .:/app
       - static_volume:/app/staticfiles  # Share static files with Nginx
-
+      - ./data:/app/data
+      
   nginx:
     image: nginx:latest
     container_name: nginx

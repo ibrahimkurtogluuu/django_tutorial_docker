@@ -189,10 +189,12 @@
                                             <a href="{% url 'update_user_form' customer_form_pair.customer_user.id %}">
                                                 <button class="update-button">Update or View Form</button>
                                             </a>
-                                            {% if customer_form_pair.is_form_completed %}
-                                                <a href="{% url 'update_user_form_test' customer_form_pair.customer_user.id %}">
-                                                    <button class="update-button">Update Form Test</button>
-                                                </a>
+
+                                            {% if customer_form_pair.is_url_added %}
+                                                <form action="{% url 'trigger_spider' customer_form_pair.customer_user.id %}" method="post">
+                                                    {% csrf_token %}
+                                                    <button class="update-button" type="submit">trigger_spider</button>
+                                                </form>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -210,6 +212,16 @@
                                                 <button class="update-button">Update or View Form</button>
                                             </a>
                                         </div>
+                                        {% if customer_form_pair.is_url_added %}
+                                            <form action="{% url 'trigger_spider' customer_form_pair.customer_user.id %}" method="post">
+                                                {% csrf_token %}
+                                                <button class="update-button" type="submit">Scrape the Web</button>
+                                            </form>
+                                            <form action="{% url 'analyze_web_content' customer_form_pair.customer_user.id %}" method="post">
+                                                {% csrf_token %}
+                                                <button class="update-button" type="submit">Analyze the Web Content</button>
+                                            </form>
+                                        {% endif %}
                                     </div>
                                 {% endif %}
                             {% endfor %}

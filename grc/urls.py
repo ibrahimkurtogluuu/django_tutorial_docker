@@ -19,5 +19,7 @@ urlpatterns = [
     path('reports/view/<int:user_id>', views.user_view_report, name='user_view_report'),
     path('users/', views.users, name='users'),
     path('form/update_test/<int:user_id>/', views.update_user_form_test, name='update_user_form_test'),
-    path('chatbot/', views.chatbot, name='chatbot')
+    path('chatbot/', views.chatbot, name='chatbot'),
+    path('trigger_spider/<int:user_id>/', views.trigger_spider, name='trigger_spider'),
+    path('analyze_web_content/<int:user_id>/', views.analyze_web_content, name='analyze_web_content'),
 ]

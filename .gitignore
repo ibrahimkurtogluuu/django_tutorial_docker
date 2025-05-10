@@ -2,4 +2,9 @@ venvdjango
 .env
 temporary_backups
 old_backup_requirements.txt
-
+bogazici_universitesi_titles.txt
+scrape_bogazici_titles.py
+scraper.py
+pdf_combiner.py
+combined_first_pages.pdf
+data

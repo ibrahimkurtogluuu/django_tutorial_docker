@@ -25,7 +25,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.views import LoginView
-
+from .scraper import SiteSpider, run_spider
 # Custom decorator to check if user is in a specific group and redirect to form submission if not
 def group_required(group_name, redirect_to='reports'):
     def decorator(view_func):
@@ -55,12 +55,15 @@ load_dotenv()  # This loads the variables from .env
 
 # Now access your environment variable
 api_key = os.environ.get('OPENAI_API_KEY', "OPENAI_API_KEY")
-# print("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW", api_key)
+
 if api_key is None:
     raise ValueError("API key is not set in the environment variables.")
 
 client = OpenAI(api_key=api_key)
 
+gemini_api_key = os.environ.get('GEMINI_API_KEY', "GEMINI_API_KEY")
+if gemini_api_key is None:
+    raise ValueError("Gemini API key is not set in the environment variables.")
 
 def register(request):
     if request.method == 'POST':
@@ -235,6 +238,7 @@ def create_report(request):
     question_answer_pair = {answer.question.text: answer.response for answer in answers}
 
     if request.method == "POST":
+        print("gemini_api_key_post:", gemini_api_key)
         # Prepare API prompt
         prompt = (
             "Analyze the following answers provided by the institution to identify deficiencies in governance, compliance, "
@@ -248,9 +252,11 @@ def create_report(request):
             "Here are the institution’s responses to asked questions:\n\n"
             f"{question_answer_pair}"
         )
+    
+
 
         try:
-            client = genai.Client(api_key="AIzaSyAtq5_gUknCT4D6ZHzp7EePKk0Bl-30sGk")  # Replace with your Gemini API key
+            client = genai.Client(api_key=gemini_api_key)  # Replace with your Gemini API key
             response = client.models.generate_content(
                 model="gemini-2.0-flash",
                 contents=prompt,
@@ -431,7 +437,7 @@ def user_create_report(request, user_id):
         )
 
         try:
-            client = genai.Client(api_key="AIzaSyAtq5_gUknCT4D6ZHzp7EePKk0Bl-30sGk")  # Replace with your Gemini API key
+            client = genai.Client(api_key=gemini_api_key)  # Replace with your Gemini API key
             response = client.models.generate_content(
                 model="gemini-2.0-flash",
                 contents=prompt,
@@ -603,9 +609,15 @@ def users(request):
     groups = Group.objects.all()
     users = User.objects.all()
     # customer_users = User.objects.filter(groups = 2) # group id 2 refers to "customers" group
-
+    answers = Answer.objects.all()
     customer_form_info = []
     for customer_user in users:
+        try: 
+            answer_web = answers.filter(user = customer_user.id, question = 1)[0]
+            is_url_added = True
+        except:
+            is_url_added = False
+
         if str(customer_user.answers.count()) == str(Question.objects.count()):
             is_form_completed = True
         else:
@@ -614,13 +626,14 @@ def users(request):
         if Report.objects.filter(user=customer_user).exists():
             is_report_created = True
         else:   
-            is_report_created = False
+            is_report_created = False   
         customer_form_info.append(
             {
             'customer_user': customer_user,
             'is_form_completed': is_form_completed,
             'is_report_created': is_report_created,
-        }
+            'is_url_added': is_url_added,
+            }
         )
     print("Customer Form Info:", customer_form_info)
 
@@ -629,6 +642,39 @@ def users(request):
                'customer_form_info': customer_form_info,
             }
     return render(request, 'grc/users.html', context)
+
+
+def trigger_spider(request, user_id):
+    if request.method == 'POST':
+        username = User.objects.filter(id=user_id)[0].username
+        print("Triggering spider...:", user_id)
+
+        run_spider(username, user_id)
+        messages.success(request, "Spider triggered successfully!")
+        return redirect('index')
+
+def analyze_web_content(request, user_id):
+    if request.method == 'POST':
+        username = User.objects.filter(id=user_id)[0].username
+        print("Analyzing web content...:", user_id)
+
+        # Define the path to the target directory
+        username = User.objects.get(id=user_id).username
+        target_dir = os.path.join("data", f"{username}_{user_id}", "downloads")
+        print("Target Directory:", target_dir)
+        # Get the list of filenames
+        try:
+            filenames = os.listdir(target_dir)
+            print("Filenames:", filenames)
+        except FileNotFoundError:
+            messages.error(request, f"Directory {target_dir} not found.")
+            filenames = []
+
+
+        messages.success(request, "Web content analyzed successfully!")
+        return redirect('index')
+
+
 
 @group_required('NORMATURK')
 @login_required
