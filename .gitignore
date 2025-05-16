@@ -7,3 +7,4 @@ scrape_bogazici_titles.py
 pdf_combiner.py
 combined_first_pages.pdf
 data
+.docker-compose.yml

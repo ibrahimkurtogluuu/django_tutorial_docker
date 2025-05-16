@@ -53,34 +53,70 @@
 # CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "mysite.wsgi:application"]
 # # CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
-
+#------------------------------------------------------
 # Stage 1: Base build stage
+# FROM python:3.13-slim AS builder
+# RUN mkdir /app
+# WORKDIR /app
+# ENV PYTHONDONTWRITEBYTECODE=1
+# ENV PYTHONUNBUFFERED=1 
+# RUN pip install --upgrade pip
+# COPY requirements.txt /app/
+# RUN pip install --no-cache-dir -r requirements.txt
+
+# # Stage 2: Production stage
+# FROM python:3.13-slim
+# RUN apt-get update && apt-get install -y nginx && rm -rf /var/lib/apt/lists/*
+# RUN useradd -m -r appuser && \
+#     mkdir /app && \
+#     chown -R appuser /app
+# COPY --from=builder /usr/local/lib/python3.13/site-packages/ /usr/local/lib/python3.13/site-packages/
+# COPY --from=builder /usr/local/bin/ /usr/local/bin/
+# WORKDIR /app
+# COPY --chown=appuser:appuser . .
+# ENV PYTHONDONTWRITEBYTECODE=1
+# ENV PYTHONUNBUFFERED=1 
+# COPY nginx-render.conf /etc/nginx/conf.d/default.conf
+# RUN python manage.py collectstatic --noinput
+# CMD ["/bin/sh", "-c", "if [ \"$RENDER\" ]; then \
+#         python manage.py migrate --noinput && \
+#         nginx && gunicorn --bind 0.0.0.0:8000 --workers=2 --timeout=120 mysite.wsgi:application; \
+#     else \
+#         gunicorn --bind 0.0.0.0:8000 --workers=3 mysite.wsgi:application; \
+#     fi"]
+
+#-------------------------------------------------------
+
+# from deep seek
+
 FROM python:3.13-slim AS builder
-RUN mkdir /app
 WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1 
 RUN pip install --upgrade pip
-COPY requirements.txt /app/
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Stage 2: Production stage
+# Production stage
 FROM python:3.13-slim
-RUN apt-get update && apt-get install -y nginx && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -r appuser && \
-    mkdir /app && \
-    chown -R appuser /app
+WORKDIR /app
+
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nginx \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy Python dependencies
 COPY --from=builder /usr/local/lib/python3.13/site-packages/ /usr/local/lib/python3.13/site-packages/
 COPY --from=builder /usr/local/bin/ /usr/local/bin/
-WORKDIR /app
-COPY --chown=appuser:appuser . .
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1 
+
+# Copy application
+COPY . .
+
+# Nginx configuration
 COPY nginx-render.conf /etc/nginx/conf.d/default.conf
+
+# Collect static files
 RUN python manage.py collectstatic --noinput
-CMD ["/bin/sh", "-c", "if [ \"$RENDER\" ]; then \
-        python manage.py migrate --noinput && \
-        nginx && gunicorn --bind 0.0.0.0:8000 --workers=2 --timeout=120 mysite.wsgi:application; \
-    else \
-        gunicorn --bind 0.0.0.0:8000 --workers=3 mysite.wsgi:application; \
-    fi"]
+
+CMD ["sh", "-c", "python manage.py migrate --noinput && nginx && gunicorn --bind 0.0.0.0:8000 --workers=2 --timeout=120 mysite.wsgi:application"]
