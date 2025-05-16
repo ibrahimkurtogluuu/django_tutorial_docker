@@ -114,7 +114,7 @@ COPY --from=builder /usr/local/bin/ /usr/local/bin/
 # Copy application
 COPY . .
 
-# Nginx configuration
+RUN rm -f /etc/nginx/conf.d/*  # ← Add this before COPY
 COPY nginx-render.conf /etc/nginx/conf.d/default.conf
 
 # Collect static files
