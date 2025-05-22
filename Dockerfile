@@ -120,5 +120,5 @@ COPY nginx-render.conf /etc/nginx/conf.d/default.conf
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
-CMD ["sh", "-c", "python manage.py migrate --noinput && nginx && gunicorn --bind 0.0.0.0:8000 --workers=2 --timeout=120 mysite.wsgi:application"]
-# CMD ["gunicorn", "--bind", "0.0.0.0:8000", "mysite.wsgi:application"]
+# CMD ["sh", "-c", "python manage.py migrate --noinput && nginx && gunicorn --bind 0.0.0.0:8000 --workers=2 --timeout=120 mysite.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "mysite.wsgi:application"]
